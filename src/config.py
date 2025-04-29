@@ -1,22 +1,20 @@
 # Configuration settings for backtesting stock trading strategies
 # --- Data Settings ---
-TICKER = 'AAPL'
-START_DATE = '2024-01-01'
+TICKER = 'GOOGL'
+START_DATE = '2010-01-01'
 END_DATE = None  # Use None for the latest data
 
 # --- Strategy Parameters ---
-# Simple Moving Average (SMA)
-SMA_SHORT_WINDOW = 50
-SMA_LONG_WINDOW = 200
+# Use None for unused values
+# Exponential Moving Average (EMA) Crossover Strategy
+EMA_SHORT_WINDOW = 9  # Short-term EMA period for entry/exit signal
+EMA_MEDIUM_WINDOW = 21 # Medium-term EMA period for entry/exit signal
+EMA_LONG_WINDOW = 50   # Long-term EMA period for trend filter
 
-# Exponential  Moving Average (EMA) 
-EMA_SHORT_WINDOW = 50
-EMA_LONG_WINDOW = 200
-
-# Relative Strength Index (RSI)
-# RSI_WINDOW = 14
-# RSI_OVERSOLD = 30
-# RSI_OVERBOUGHT = 70
+# Relative Strength Index (RSI) Filter
+RSI_WINDOW = 14        # RSI calculation period
+RSI_OVERBOUGHT = 70    # RSI level above which we consider the stock overbought (filter out buys)
+RSI_OVERSOLD = 30      # RSI level below which we consider the stock oversold (not used in this simple long-only exit)
 
 # --- Backtesting Settings ---
 INITIAL_CAPITAL = 100000.0
@@ -26,5 +24,5 @@ PLOT_WIDTH = 12
 PLOT_HEIGHT = 8
 
 # --- File Paths ---
-DATA_DIR = 'data/historical/'
+DATA_DIR = 'data/historical/' # For storing .pkl data
 RESULTS_DIR = 'data/results/'

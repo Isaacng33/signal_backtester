@@ -28,8 +28,8 @@ def get_data(ticker=config.TICKER, start_date=config.START_DATE, end_date=config
             print(f"Warning: No data downloaded for {ticker}. Check ticker symbol and date range.")
             return pd.DataFrame()
         print(f"Data fetched successfully for {ticker}.")
-        # Save data with pickle
         
+        # Save data with pickle
         if isinstance(data.columns, pd.MultiIndex):
             print("Detected MultiIndex columns, attempting to flatten...")
             if len(data.columns.levels) > 1 and len(data.columns.get_level_values(1).unique()) == 1:
