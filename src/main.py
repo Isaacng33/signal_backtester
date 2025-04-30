@@ -2,7 +2,6 @@
 Main script to run the investment signals backtester workflow for multiple tickers.
 """
 
-import pandas as pd
 import config
 from data_fetcher import get_data
 from signals import generate_ema_rsi_signals 
@@ -94,9 +93,8 @@ def main():
             import traceback; traceback.print_exc()
             continue # Skip to next ticker
 
-    # --- 5. Display Aggregate/Individual Results ---
-    for ticker, results in all_results.items():
-        print_summary_and_trades(results, ticker)
+    # --- 5. Display Results ---
+    print_summary_and_trades(all_results)
 
     print("\n--- Backtesting Workflow Complete ---")
 
