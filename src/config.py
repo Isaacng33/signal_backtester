@@ -1,8 +1,9 @@
 # Configuration settings for backtesting stock trading strategies
 # --- Data Settings ---
-TICKER = 'GOOGL'
+TICKERS = ['GOOGL', 'AAPL', 'MSFT']
 START_DATE = '2020-01-01'
 END_DATE = None  # Use None for the latest data
+INTERVAL = '1d'  # Data interval (e.g., '1m', '5m', '1h', '1d')
 
 # --- Strategy Parameters ---
 # Use None for unused values

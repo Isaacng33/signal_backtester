@@ -153,7 +153,7 @@ def run_event_driven_backtest(
     worst_daily_return_date = portfolio_daily_returns.idxmin()
 
     results = {
-        "Method": f"Event-Driven ({'Close' if trade_on_close else 'Next Open'})",
+        "Trade Execution on Close/Open": f"Event-Driven ({'Close' if trade_on_close else 'Next Open'})",
         "Start Date": df.index[0].strftime('%Y-%m-%d'),
         "End Date": df.index[-1].strftime('%Y-%m-%d'),
         "Initial Capital": initial_capital,
