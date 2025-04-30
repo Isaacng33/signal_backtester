@@ -24,10 +24,6 @@ INITIAL_CAPITAL = 100000.0
 COMMISSION = 0.0  # FIXED commission per trade
 POSITION_SIZE_PERCENT = 1.0  # Fraction of capital to invest in each trade
 
-# --- Visualization Settings ---
-PLOT_WIDTH = 12
-PLOT_HEIGHT = 8
-
 # --- File Paths ---
 DATA_DIR = 'data/historical/' # For storing .pkl data
 RESULTS_DIR = 'data/results/'

@@ -43,6 +43,7 @@ def run_event_driven_backtest(
     # Logging
     trades = []
     daily_portfolio_values = pd.Series(index=df.index, dtype=float)
+    daily_portfolio_values.iloc[0] = initial_capital
 
     print(f"\nRunning Event-Driven Backtest ({'Trade on Close' if trade_on_close else 'Trade on Next Open'})...")
 
@@ -140,17 +141,38 @@ def run_event_driven_backtest(
     total_loss = abs(losing_trades['PnL'].sum())
     profit_factor = winning_trades['PnL'].sum() / total_loss if total_loss > 0 else np.inf
 
+    # --- Daily Returns Calculation & Max Drawdown --
+    portfolio_daily_returns = daily_portfolio_values.pct_change().fillna(0)
+    cumulative_max = daily_portfolio_values.cummax()
+    drawdown = (daily_portfolio_values - cumulative_max) / cumulative_max
+    max_drawdown_pct = drawdown.min() * 100 if not drawdown.empty else 0
+    max_drawdown_date = drawdown.idxmin()
+
+    # Worst Daily Return
+    worst_daily_return_pct = portfolio_daily_returns.min() * 100 if not portfolio_daily_returns.empty else 0
+    worst_daily_return_date = portfolio_daily_returns.idxmin()
+
     results = {
         "Method": f"Event-Driven ({'Close' if trade_on_close else 'Next Open'})",
-        "Start Date": df.index[0].strftime('%Y-%m-%d'), "End Date": df.index[-1].strftime('%Y-%m-%d'),
-        "Initial Capital": initial_capital, "Final Portfolio Value": final_portfolio_value,
+        "Start Date": df.index[0].strftime('%Y-%m-%d'),
+        "End Date": df.index[-1].strftime('%Y-%m-%d'),
+        "Initial Capital": initial_capital,
+        "Final Portfolio Value": final_portfolio_value,
         "Total Return %": total_return_pct,
         "Buy & Hold Final Value": buy_hold_final_value_bh, "Buy & Hold Return %": buy_hold_return_pct_bh * 100,
-        "Total Trades": total_trades, "Commission Per Trade": commission_per_trade,
-        "Total Commission Paid": total_commission_paid, "Win Rate %": win_rate,
-        "Average Win PnL": avg_win_pnl, "Average Loss PnL": avg_loss_pnl,
+        "Max Drawdown %": max_drawdown_pct,
+        "Max Drawdown Date": max_drawdown_date.strftime('%Y-%m-%d') if pd.notna(max_drawdown_date) else 'N/A',
+        "Worst Daily Return %": worst_daily_return_pct,
+        "Worst Daily Return Date": worst_daily_return_date.strftime('%Y-%m-%d') if pd.notna(worst_daily_return_date) else 'N/A',
         "Profit Factor": profit_factor,
-        "Trades Log": trades_df, "Daily Portfolio Value": daily_portfolio_values
+        "Total Trades": total_trades,
+        "Win Rate %": win_rate,
+        "Average Win PnL": avg_win_pnl,
+        "Average Loss PnL": avg_loss_pnl,
+        "Commission Per Trade": commission_per_trade,
+        "Total Commission Paid": total_commission_paid,
+        "Trades Log": trades_df,
+        "Daily Portfolio Value": daily_portfolio_values # Keep this for plotting
     }
     print("\nEvent-Driven Backtest Simulation Complete.")
     return results
@@ -224,7 +246,6 @@ if __name__ == '__main__':
                                     elif "Factor" in key : print(f"  {key}: {value:.2f}")
                                     else: print(f"  {key}: {value:.4f}")
                                 else: print(f"  {key}: {value}")
-                        # Uncomment to see trade log
                         print("\nTrade Log:")
                         pd.set_option('display.width', 1000)
                         print(event_backtest_results["Trades Log"])

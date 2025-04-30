@@ -72,6 +72,9 @@ def main():
                     elif "Factor" in key : print(f"  {key}: {value:.2f}")
                     else: print(f"  {key}: {value:.4f}")
                 else: print(f"  {key}: {value}")
+        print("\nTrade Log:")
+        pd.set_option('display.width', 1000)
+        print(backtest_results["Trades Log"])
 
         print("\n--- Backtesting Workflow Complete ---")
     else:
