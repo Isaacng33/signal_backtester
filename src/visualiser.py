@@ -86,7 +86,7 @@ def print_summary_and_trades(all_results: dict):
         "Total Return %",
         "Buy & Hold Return %",
         "Max Drawdown %",
-        "Worst Daily Return",
+        "Worst Daily Return %",
         "Profit Factor",
         "Win Rate %",
         "Average Win PnL",
