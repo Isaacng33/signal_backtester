@@ -50,7 +50,6 @@ def run_event_driven_backtest(
         current_date = df.index[i]
         signal = df['Signal'].iloc[i]
         current_close = df['Adj Close'].iloc[i]
-        current_open = df['Open'].iloc[i]
 
         execution_price = np.nan
         execution_date = None

@@ -1,49 +1,82 @@
 """
-Main script to run the investment signal generation and backtesting workflow.
+Main script to run the investment signals backtester workflow.
 """
-from src import config
-from src import data_fetcher
-from src import signals
-# Import other modules like backtester, visualizer when ready
+import os
+import pandas as pd
+import config
+from data_fetcher import get_data
+from signals import generate_ema_rsi_signals
+from backtester import run_event_driven_backtest
 
-def run_strategy():
-    """
-    Executes the main workflow: fetch data, generate signals.
-    (Later: run backtest, visualize results).
-    """
-    print("--- Starting Strategy Workflow ---")
+def main():
+    """Orchestrates the backtesting process."""
+    print("--- Starting Backtesting Workflow ---")
 
-    # 1. Fetch Data
-    stock_data = data_fetcher.get_data(
-        ticker=config.TICKER,
-        start_date=config.START_DATE,
-        end_date=config.END_DATE
-    )
+    # --- 1. Fetch Data ---
+    ticker = config.TICKER
+    hist_data_raw = get_data(ticker=ticker, start_date=config.START_DATE, end_date=config.END_DATE)
+    if hist_data_raw.empty:
+        print("Error: No data fetched. Exiting.")
+        return
+    print(f"\nFetched {len(hist_data_raw)} rows of data for {ticker}.")
 
-    if stock_data.empty:
-        print("Workflow aborted: Could not fetch data.")
+    # --- 2. Generate Signals ---
+    print("\nGenerating signals...")
+    try:
+        data_with_signals = generate_ema_rsi_signals(
+            hist_data_raw.copy(),
+            short_window=config.EMA_SHORT_WINDOW,
+            medium_window=config.EMA_MEDIUM_WINDOW,
+            long_window=config.EMA_LONG_WINDOW,
+            rsi_window=config.RSI_WINDOW,
+            rsi_overbought=config.RSI_OVERBOUGHT
+        )
+    except Exception as e:
+        print(f"Error during signal generation: {e}")
         return
 
-    # 2. Generate Signals (Example: SMA Crossover)
-    data_with_signals = signals.generate_sma_crossover_signals(stock_data)
+    # --- 3. Prepare Data for Backtest ---
+    backtest_input_data = hist_data_raw[['Adj Close', 'Open']].copy()
+    backtest_input_data['Signal'] = data_with_signals['Signal']
+    backtest_input_data['Signal'] = backtest_input_data['Signal'].fillna(0)
+    backtest_input_data = backtest_input_data.dropna(subset=['Adj Close', 'Open', 'Signal'])
+    print(f"\nData ready for backtest (rows: {len(backtest_input_data)})")
 
-    print("\n--- Signals Generated ---")
-    print(f"Displaying last 5 rows for ticker: {config.TICKER}")
-    print(data_with_signals[['Adj Close', 'SMA_Short', 'SMA_Long', 'Signal', 'Position']].tail())
+    if backtest_input_data.empty:
+        print("Error: No data available for backtest after signal alignment and cleaning. Exiting.")
+        return
 
-    # --- Future Steps ---
-    # 3. Run Backtester
-    # results = backtester.run_backtest(data_with_signals, config.INITIAL_CAPITAL)
-    # print("\n--- Backtesting Results ---")
-    # print(results) # Display performance metrics
+    # --- 4. Run Backtest ---
+    print("\nRunning backtest...")
+    try:
+        backtest_results = run_event_driven_backtest(
+            data=backtest_input_data,
+            initial_capital=config.INITIAL_CAPITAL,
+            commission_per_trade=config.COMMISSION,
+            position_size_percent=config.POSITION_SIZE_PERCENT,
+            trade_on_close=False
+        )
+    except Exception as e:
+         print(f"Error during backtest execution: {e}")
+         return
 
-    # 4. Visualize Results
-    # visualizer.plot_strategy(data_with_signals, results)
-    # print("Plots generated.")
+    # --- 5. Display Summary Results ---
+    if backtest_results:
+        print("\n--- Backtest Performance Summary ---")
+        # Reuse the printing logic from backtester.py's test block or customize
+        for key, value in backtest_results.items():
+            if key not in ["Trades Log", "Daily Portfolio Value", "Performance Data"]: # Don't print DataFrame/Series summary
+                if isinstance(value, float):
+                    if "Value" in key or "Capital" in key or "PnL" in key: print(f"  {key}: ${value:,.2f}")
+                    elif "%" in key or "Rate" in key: print(f"  {key}: {value:.2f}%")
+                    elif "Factor" in key : print(f"  {key}: {value:.2f}")
+                    else: print(f"  {key}: {value:.4f}")
+                else: print(f"  {key}: {value}")
+
+        print("\n--- Backtesting Workflow Complete ---")
+    else:
+         print("\nBacktest did not produce results.")
 
 
-    print("\n--- Strategy Workflow Finished ---")
-
-if __name__ == '__main__':
-    # This block executes when the script is run directly
-    run_strategy()
+if __name__ == "__main__":
+    main()

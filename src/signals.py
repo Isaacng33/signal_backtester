@@ -86,8 +86,8 @@ def generate_ema_rsi_signals(
     rsi_ok = df[rsi_col] < rsi_overbought
 
     # 4. Exit Crossover Signal (Short EMA crosses below Medium EMA)
-    ema_cross_below = (df[short_ema_col] < df[medium_ema_col]) & \
-                      (df[short_ema_col].shift(1) >= df[medium_ema_col].shift(1))
+    ema_cross_below = (df[medium_ema_col] < df[long_ema_col]) & \
+                      (df[medium_ema_col].shift(1) >= df[long_ema_col].shift(1))
 
     # --- Combine Conditions for Buy/Sell Triggers ---
     buy_trigger = trend_up & ema_cross_above & rsi_ok

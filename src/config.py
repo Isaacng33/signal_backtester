@@ -6,10 +6,13 @@ END_DATE = None  # Use None for the latest data
 
 # --- Strategy Parameters ---
 # Use None for unused values
-# Exponential Moving Average (EMA) Crossover Strategy
-EMA_SHORT_WINDOW = 9  # Short-term EMA period for entry/exit signal
-EMA_MEDIUM_WINDOW = 21 # Medium-term EMA period for entry/exit signal
-EMA_LONG_WINDOW = 50  # Long-term EMA period for trend filter
+EMA_SHORT_WINDOW = 9
+EMA_MEDIUM_WINDOW = 21
+EMA_LONG_WINDOW = 50 
+
+SMA_SHORT_WINDOW = 9
+SMA_MEDIUM_WINDOW = 21
+ESA_LONG_WINDOW = 50 
 
 # Relative Strength Index (RSI) Filter
 RSI_WINDOW = 14        # RSI calculation period
