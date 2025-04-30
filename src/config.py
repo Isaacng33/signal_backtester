@@ -1,6 +1,6 @@
 # Configuration settings for backtesting stock trading strategies
 # --- Data Settings ---
-TICKERS = ['GOOGL', 'AAPL', 'MSFT', 'NVDA', 'AMZN']  # List of stock tickers to backtest
+TICKERS = ['SPY']  # List of stock tickers to backtest
 START_DATE = '2020-01-01'
 END_DATE = None  # Use None for the latest data
 INTERVAL = '1d'  # Data interval (e.g., '1m', '5m', '1h', '1d')
@@ -24,6 +24,9 @@ RSI_OVERSOLD = 30      # RSI level below which we consider the stock oversold (n
 INITIAL_CAPITAL = 100000.0
 COMMISSION = 0.0  # FIXED commission per trade
 POSITION_SIZE_PERCENT = 1.0  # Fraction of capital to invest in each trade
+# Use None if not needed
+STOP_LOST_PERCENT = None # Stop loss percentage (5%)
+TAKE_PROFIT_PERCENT = None  # Take profit percentage (10%)
 
 # --- File Paths ---
 DATA_DIR = 'data/historical/' # For storing .pkl data

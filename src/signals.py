@@ -1,5 +1,11 @@
 """
 Generates trading signals based on the EMA Crossover with RSI Filter strategy.
+
+For backtesting format, the signal must return a DataFrame with the following addition columns from the input DataFrame:
+    'Signal', and 'Position' columns.
+        Signal: 1 for Buy entry, -1 for Sell entry, 0 otherwise.
+        Position: 1 meaning currently having a long position, 0 for Flat.
+
 """
 import pandas as pd
 import numpy as np
@@ -118,7 +124,7 @@ def generate_ema_rsi_signals(
 # --- Example Usage ---
 if __name__ == '__main__':
     # --- Load Data ---
-    TICKER = config.TICKER
+    TICKER = config.TICKERS
     DATA_PATH = os.path.join(config.DATA_DIR, f'{TICKER}_data.pkl')
 
     if os.path.exists(DATA_PATH):

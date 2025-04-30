@@ -66,7 +66,7 @@ def main():
 
         # --- 3. Prepare Data for Backtest ---
         print(f"Starting backtest for {ticker}...")
-        backtest_input_data = hist_data_ticker[['Adj Close', 'Open']].copy()
+        backtest_input_data = hist_data_ticker.copy()
         # Use .loc to safely align based on matching index dates
         backtest_input_data.loc[data_with_signals.index, 'Signal'] = data_with_signals['Signal']
         # Fill signals that might be NaN due to date range differences or initial indicator NaNs

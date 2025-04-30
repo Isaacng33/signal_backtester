@@ -84,6 +84,7 @@ def print_summary_and_trades(all_results: dict):
         "Initial Capital",
         "Final Portfolio Value",
         "Total Return %",
+        "Buy & Hold Final Value",
         "Buy & Hold Return %",
         "Max Drawdown %",
         "Worst Daily Return %",
