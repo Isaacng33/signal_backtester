@@ -1,4 +1,3 @@
-# src/indicators.py
 """
 Functions to calculate technical indicators.
 """
